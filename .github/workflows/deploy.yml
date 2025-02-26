@@ -22,7 +22,7 @@ jobs:
           cache: "pnpm"
       # Pick your own package manager and build script
       - run: pnpm install
-      - run: pnpm dlx nuxt build --preset github_pages
+      - run: NUXT_APP_BASE_URL=/beyscore/ pnpm dlx nuxt build --preset github_pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
