@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {},
+	"extensions": {
+		"recommendations": [
+			"nuxtr.nuxt-vscode-extentions",
+			"esbenp.prettier-vscode",
+			"streetsidesoftware.code-spell-checker",
+			"dbaeumer.vscode-eslint"
+		]
+	}
+}
