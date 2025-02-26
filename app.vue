@@ -11,10 +11,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <div>
-      <NavBar />
-      <Main />
-    </div>
-  </div>
+  <NuxtPwaManifest />
+  <NavBar />
+  <Main />
 </template>
