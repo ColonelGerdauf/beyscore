@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { EarnPointArgs } from "./WinButton.vue";
+
+const player1Index = 0;
+const player2Index = 1;
+
 const scoreToWin = ref(0);
 
 const player1Name = ref("");
@@ -11,7 +16,7 @@ const history = ref<
   { player1Score: number; player2Score: number; reason: string }[]
 >([]);
 
-function earnPoints(points: number, player: string, reason: string) {
+function earnPoints(args: EarnPointArgs) {
   // Save the current scores to history before making changes
   history.value.push({
     player1Score: player1Score.value,
@@ -19,13 +24,13 @@ function earnPoints(points: number, player: string, reason: string) {
     reason: scoreReason.value,
   });
 
-  if (player === "player1") {
-    player1Score.value += points;
+  if (args.Player === player1Index) {
+    player1Score.value += args.Points;
   } else {
-    player2Score.value += points;
+    player2Score.value += args.Points;
   }
 
-  scoreReason.value = reason;
+  scoreReason.value = args.Reason;
 }
 
 function undoLastAction() {
@@ -120,93 +125,26 @@ function newMatch(matchScore: number) {
           <h2 class="text-center">BeyScore</h2>
           <div class="row mt-4">
             <!-- Player 1 Section -->
-            <div class="col text-center">
-              <h3>{{ player1Name }}</h3>
-              <h4>{{ player1Score }}</h4>
-              <div class="btn-group">
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="
-                    earnPoints(1, 'player1', `${player1Name} Spin Finish`)
-                  "
-                >
-                  Spin
-                </button>
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="
-                    earnPoints(2, 'player1', `${player1Name} Over Finish`)
-                  "
-                >
-                  Over
-                </button>
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="
-                    earnPoints(2, 'player1', `${player1Name} Burst Finish`)
-                  "
-                >
-                  Burst
-                </button>
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="earnPoints(3, 'player1', `${player1Name} Xtreme`)"
-                >
-                  Xtreme
-                </button>
-              </div>
-            </div>
-
+            <PlayerSection
+              :player-name="player1Name"
+              :player-index="player1Index"
+              :player-score="player1Score"
+              :is-disabled="checkWinner() !== ''"
+              :win-function="earnPoints"
+            />
             <div class="col text-center">
               <h3>Last Score</h3>
               <h4>{{ scoreReason }}</h4>
             </div>
 
             <!-- Player 2 Section -->
-            <div class="col text-center">
-              <h3>{{ player2Name }}</h3>
-              <h4>{{ player2Score }}</h4>
-              <div class="btn-group">
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="
-                    earnPoints(1, 'player2', `${player1Name} Spin Finish`)
-                  "
-                >
-                  Spin
-                </button>
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="
-                    earnPoints(2, 'player2', `${player2Name} Over Finish`)
-                  "
-                >
-                  Over
-                </button>
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="
-                    earnPoints(2, 'player2', `${player2Name} Burst Finish`)
-                  "
-                >
-                  Burst
-                </button>
-                <button
-                  class="btn btn-success"
-                  :disabled="checkWinner() !== ''"
-                  @click="earnPoints(3, 'player2', `${player2Name} Xtreme`)"
-                >
-                  Xtreme
-                </button>
-              </div>
-            </div>
+            <PlayerSection
+              :player-name="player2Name"
+              :player-index="player2Index"
+              :player-score="player2Score"
+              :is-disabled="checkWinner() !== ''"
+              :win-function="earnPoints"
+            />
           </div>
 
           <!-- Display winner -->
