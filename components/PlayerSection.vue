@@ -22,7 +22,7 @@ defineProps<{
         :args="{
           Points: 1,
           Player: playerIndex,
-          Reason: `${playerName} Over Finish`,
+          Reason: `${playerName} Spin Finish`,
         }"
       />
       <WinButton
@@ -36,7 +36,7 @@ defineProps<{
         }"
       />
       <WinButton
-        win-name="Over"
+        win-name="Burst"
         :is-disabled="isDisabled"
         :click-func="winFunction"
         :args="{
@@ -46,13 +46,13 @@ defineProps<{
         }"
       />
       <WinButton
-        win-name="Over"
+        win-name="Xtreme"
         :is-disabled="isDisabled"
         :click-func="winFunction"
         :args="{
           Points: 3,
           Player: playerIndex,
-          Reason: `${playerName} Extreme Finish`,
+          Reason: `${playerName} Xtreme Finish`,
         }"
       />
     </div>
