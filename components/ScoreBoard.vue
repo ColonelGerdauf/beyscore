@@ -73,6 +73,12 @@ function newMatch(matchScore: number) {
     player2Name.value = "Player 2";
   }
 }
+
+const { play } = useSound("/sounds/countdown.mp3");
+
+function startCountdown() {
+  play();
+}
 </script>
 
 <template>
@@ -135,6 +141,10 @@ function newMatch(matchScore: number) {
             <div class="col text-center">
               <h3>Last Score</h3>
               <h4>{{ scoreReason }}</h4>
+
+              <button class="btn btn-primary" @click="startCountdown">
+                Countdown
+              </button>
             </div>
 
             <!-- Player 2 Section -->

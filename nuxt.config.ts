@@ -2,8 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["@nuxt/eslint", "@vite-pwa/nuxt"],
+  modules: ["@nuxt/eslint", "@vite-pwa/nuxt", "@vueuse/sound/nuxt"],
   css: ["bootstrap/dist/css/bootstrap.min.css", "assets/scss/main.scss"],
+  sound: {
+    sounds: {
+      scan: true,
+    },
+  },
   pwa: {
     registerType: "autoUpdate",
     workbox: {
