@@ -55,6 +55,16 @@ defineProps<{
           Reason: `${playerName} Xtreme Finish`,
         }"
       />
+      <WinButton
+        win-name="Launch Error"
+        :is-disabled="isDisabled"
+        :click-func="winFunction"
+        :args="{
+          Points: 1,
+          Player: playerIndex,
+          Reason: `${playerName} Opponent Launch Error`,
+        }"
+      />
     </div>
   </div>
 </template>
