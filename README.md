@@ -12,7 +12,7 @@ BeyScore is a Beyblade score keeping application built using [Vue.js](https://vu
 
 ## Setup
 
-Install [NodeJS](https://nodejs.org/en) and [pnpm](https://pnpm.io)
+Install [NodeJS](https://nodejs.org/en), [pnpm](https://pnpm.io), and [Git-LFS](https://git-lfs.com/)
 
 Make sure to install dependencies:
 
@@ -35,7 +35,7 @@ pnpm dev
 Build the application for production:
 
 ```bash
-pnpm build
+pnpm generate
 ```
 
 Locally preview production build:
