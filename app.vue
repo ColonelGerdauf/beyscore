@@ -12,6 +12,8 @@ useSeoMeta({
 
 <template>
   <NuxtPwaManifest />
-  <NavBar />
-  <ScoreBoard />
+  <ColorScheme placeholder="..." tag="div">
+    <NavBar />
+    <ScoreBoard />
+  </ColorScheme>
 </template>

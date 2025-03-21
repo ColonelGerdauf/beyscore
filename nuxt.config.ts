@@ -2,7 +2,12 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["@nuxt/eslint", "@vite-pwa/nuxt", "@vueuse/sound/nuxt"],
+  modules: [
+    "@nuxt/eslint",
+    "@vite-pwa/nuxt",
+    "@vueuse/sound/nuxt",
+    "@nuxtjs/color-mode",
+  ],
   css: ["bootstrap/dist/css/bootstrap.min.css", "assets/scss/main.scss"],
   sound: {
     sounds: {
@@ -37,4 +42,8 @@ export default defineNuxtConfig({
       ],
     },
   },
+  colorMode: {
+    dataValue: "bs-theme",
+  },
 });
+
