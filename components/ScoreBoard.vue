@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { EarnPointArgs } from "./WinButton.vue";
 
+const props = defineProps<{
+  pointsToWin: number;
+  player1Name: string;
+  player2Name: string;
+}>();
+
+defineEmits(["reset"]);
+
 const player1Index = 0;
 const player2Index = 1;
-
-const scoreToWin = ref(0);
-
-const player1Name = ref("");
-const player2Name = ref("");
 
 const player1Score = ref(0);
 const player2Score = ref(0);
@@ -45,33 +48,12 @@ function undoLastAction() {
 }
 
 function checkWinner() {
-  if (player1Score.value >= scoreToWin.value) {
-    return `${player1Name.value} Wins!`;
-  } else if (player2Score.value >= scoreToWin.value) {
-    return `${player2Name.value} Wins!`;
+  if (player1Score.value >= props.pointsToWin) {
+    return `${props.player1Name} Wins!`;
+  } else if (player2Score.value >= props.pointsToWin) {
+    return `${props.player2Name} Wins!`;
   }
   return "";
-}
-
-function resetSettings() {
-  scoreToWin.value = 0;
-  player1Score.value = 0;
-  player2Score.value = 0;
-  scoreReason.value = "";
-  player1Name.value = "";
-  player2Name.value = "";
-  history.value = []; // Clear history for the new match
-}
-
-function newMatch(matchScore: number) {
-  scoreToWin.value = matchScore;
-  if (player1Name.value === "") {
-    player1Name.value = "Player 1";
-  }
-
-  if (player2Name.value === "") {
-    player2Name.value = "Player 2";
-  }
 }
 
 const { play } = useSound("/sounds/countdown.mp3");
@@ -82,127 +64,83 @@ function startCountdown() {
 </script>
 
 <template>
-  <div>
-    <div v-if="scoreToWin === 0" class="container mt-4">
-      <h2 class="text-center">Create a tournament</h2>
-      <div>
-        <label for="player-1-name" class="form-label">Player 1 Name</label>
-        <input
-          id="player-1-name"
-          v-model="player1Name"
-          type="text"
-          class="form-control"
-          placeholder="Player 1"
-          aria-label="Player 1 Name"
-          aria-describedby="player-1-name"
-        />
-      </div>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="text-center">BeyScore</h2>
+        <div class="row mt-4">
+          <!-- Player 1 Section -->
+          <PlayerSection
+            :player-name="player1Name"
+            :player-index="player1Index"
+            :player-score="player1Score"
+            :is-disabled="checkWinner() !== ''"
+            :win-function="earnPoints"
+          />
+          <div class="col text-center">
+            <h3>Last Score</h3>
+            <h4>{{ scoreReason }}</h4>
 
-      <div>
-        <label for="player-2-name" class="form-label">Player 2 Name</label>
-        <input
-          v-model="player2Name"
-          type="text"
-          class="form-control"
-          placeholder="Player 2"
-          aria-label="Player 2 Name"
-          aria-describedby="player-2-name"
-        />
-      </div>
-      <div>Points to Win</div>
-      <div class="btn-group" role="group" aria-label="Point Button Selector">
-        <button type="button" class="btn btn-primary" @click="newMatch(3)">
-          3 Points
-        </button>
-        <button type="button" class="btn btn-primary" @click="newMatch(4)">
-          4 Points
-        </button>
-        <button type="button" class="btn btn-primary" @click="newMatch(5)">
-          5 Points
-        </button>
-        <button type="button" class="btn btn-primary" @click="newMatch(7)">
-          7 Points
-        </button>
-      </div>
-    </div>
-    <div v-else class="container mt-4">
-      <div class="row">
-        <div class="col-12">
-          <h2 class="text-center">BeyScore</h2>
-          <div class="row mt-4">
-            <!-- Player 1 Section -->
-            <PlayerSection
-              :player-name="player1Name"
-              :player-index="player1Index"
-              :player-score="player1Score"
-              :is-disabled="checkWinner() !== ''"
-              :win-function="earnPoints"
-            />
-            <div class="col text-center">
-              <h3>Last Score</h3>
-              <h4>{{ scoreReason }}</h4>
-
-              <button class="btn btn-primary" @click="startCountdown">
-                Countdown
-              </button>
-            </div>
-
-            <!-- Player 2 Section -->
-            <PlayerSection
-              :player-name="player2Name"
-              :player-index="player2Index"
-              :player-score="player2Score"
-              :is-disabled="checkWinner() !== ''"
-              :win-function="earnPoints"
-            />
-          </div>
-
-          <!-- Display winner -->
-          <div v-if="checkWinner()" class="mt-4 text-center">
-            <h2 class="text-success">{{ checkWinner() }}</h2>
-          </div>
-
-          <div class="mt-4 text-center">
-            <button
-              class="btn btn-warning"
-              :disabled="history.length === 0"
-              @click="undoLastAction"
-            >
-              Undo
+            <button class="btn btn-primary" @click="startCountdown">
+              Countdown
             </button>
           </div>
 
-          <div class="mt-4 text-center">
-            <button class="btn btn-warning" @click="resetSettings">
-              New Match
-            </button>
-          </div>
+          <!-- Player 2 Section -->
+          <PlayerSection
+            :player-name="player2Name"
+            :player-index="player2Index"
+            :player-score="player2Score"
+            :is-disabled="checkWinner() !== ''"
+            :win-function="earnPoints"
+          />
+        </div>
 
-          <!-- History Table -->
-          <div v-if="history.length > 0" class="mt-4">
-            <h4 class="text-center">Score History</h4>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>{{ player1Name }} Score</th>
-                  <th>{{ player2Name }} Score</th>
-                  <th>Reason</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(entry, index) in history" :key="index">
-                  <td>{{ entry.player1Score }}</td>
-                  <td>{{ entry.player2Score }}</td>
-                  <td>{{ entry.reason }}</td>
-                </tr>
-                <tr>
-                  <td>{{ player1Score }}</td>
-                  <td>{{ player2Score }}</td>
-                  <td>{{ scoreReason }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <!-- Display winner -->
+        <div v-if="checkWinner()" class="mt-4 text-center">
+          <h2 class="text-success">{{ checkWinner() }}</h2>
+        </div>
+
+        <div class="mt-4 text-center">
+          <button
+            class="btn btn-warning"
+            :disabled="history.length === 0"
+            @click="undoLastAction"
+          >
+            Undo
+          </button>
+        </div>
+
+        <div class="mt-4 text-center">
+          <button class="btn btn-warning" @click="$emit('reset')">
+            New Match
+          </button>
+        </div>
+
+        <!-- History Table -->
+        <div v-if="history.length > 0" class="mt-4">
+          <h4 class="text-center">Score History</h4>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>{{ player1Name }} Score</th>
+                <th>{{ player2Name }} Score</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(entry, index) in history" :key="index">
+                <td>{{ entry.player1Score }}</td>
+                <td>{{ entry.player2Score }}</td>
+                <td>{{ entry.reason }}</td>
+              </tr>
+              <tr>
+                <td>{{ player1Score }}</td>
+                <td>{{ player2Score }}</td>
+                <td>{{ scoreReason }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
