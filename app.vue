@@ -13,6 +13,7 @@ const scoreToWin = ref(0);
 
 const player1Name = ref("");
 const player2Name = ref("");
+const judgeMode = ref(true);
 
 function newMatch(matchScore: number) {
   scoreToWin.value = matchScore;
@@ -62,6 +63,20 @@ function reset() {
           aria-describedby="player-2-name"
         />
       </div>
+
+      <div class="form-check form-switch">
+        <label class="form-check-label" for="judgeMode"
+          >Enable Judge Mode</label
+        >
+        <input
+          id="judgeMode"
+          v-model="judgeMode"
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+        />
+      </div>
+
       <div>Points to Win</div>
       <div class="btn-group" role="group" aria-label="Point Button Selector">
         <button type="button" class="btn btn-primary" @click="newMatch(3)">
@@ -80,7 +95,16 @@ function reset() {
     </div>
 
     <ScoreBoard
-      v-if="scoreToWin !== 0"
+      v-if="scoreToWin !== 0 && judgeMode"
+      hydrate-on-visible
+      :points-to-win="scoreToWin"
+      :player1-name="player1Name"
+      :player2-name="player2Name"
+      @reset="reset"
+    />
+
+    <MobileScoreBoard
+      v-if="scoreToWin !== 0 && !judgeMode"
       hydrate-on-visible
       :points-to-win="scoreToWin"
       :player1-name="player1Name"

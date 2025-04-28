@@ -15,36 +15,27 @@ const player2Index = 1;
 const player1Score = ref(0);
 const player2Score = ref(0);
 const scoreReason = ref("");
-const history = ref<
-  { player1Score: number; player2Score: number; reason: string }[]
->([]);
+const history = ref<ScoreHistory[]>([]);
 
 function earnPoints(args: EarnPointArgs) {
-  // Save the current scores to history before making changes
-  history.value.push({
-    player1Score: player1Score.value,
-    player2Score: player2Score.value,
-    reason: scoreReason.value,
+  useEarnPoints({
+    Player: args.Player,
+    Points: args.Points,
+    Reason: args.Reason,
+    CurrentReason: scoreReason,
+    Player1Score: player1Score,
+    Player2Score: player2Score,
+    History: history,
   });
-
-  if (args.Player === player1Index) {
-    player1Score.value += args.Points;
-  } else {
-    player2Score.value += args.Points;
-  }
-
-  scoreReason.value = args.Reason;
 }
 
 function undoLastAction() {
-  if (history.value.length > 0) {
-    const lastAction = history.value.pop();
-    if (lastAction) {
-      player1Score.value = lastAction.player1Score;
-      player2Score.value = lastAction.player2Score;
-      scoreReason.value = lastAction.reason;
-    }
-  }
+  useUndoAction({
+    Player1Score: player1Score,
+    Player2Score: player2Score,
+    ScoreReason: scoreReason,
+    History: history,
+  });
 }
 
 function checkWinner() {
@@ -105,7 +96,7 @@ function startCountdown() {
           <button
             class="btn btn-warning"
             :disabled="history.length === 0"
-            @click="undoLastAction"
+            @click="undoLastAction()"
           >
             Undo
           </button>
