@@ -54,13 +54,6 @@ const { play } = useSound("/sounds/countdown.mp3");
 function startCountdown() {
   play();
 }
-
-// Point button configurations
-const pointOptions = [
-  { points: 1, label: "+1" },
-  { points: 2, label: "+2" },
-  { points: 3, label: "+3" },
-];
 </script>
 
 <template>
@@ -88,6 +81,9 @@ const pointOptions = [
     <div class="row my-2">
       <div class="col-12 text-center">
         <div class="mb-2">
+          <button class="btn btn-secondary btn-lg me-2" @click="startCountdown">
+            Countdown
+          </button>
           <button
             class="btn btn-warning btn-lg"
             :disabled="history.length === 0"
@@ -127,9 +123,6 @@ const pointOptions = [
     <!-- Bottom Controls -->
     <div class="row py-2">
       <div class="col-12 text-center">
-        <button class="btn btn-secondary me-2" @click="startCountdown">
-          Countdown
-        </button>
         <button class="btn btn-danger" @click="$emit('reset')">
           Reset Game
         </button>
@@ -156,25 +149,6 @@ const pointOptions = [
 
 .player2-section {
   border-top: 1px solid #dee2e6;
-}
-
-.score-container {
-  text-align: center;
-  width: 100%;
-}
-
-.rotated-content {
-  transform: rotate(180deg);
-}
-
-.score-display {
-  font-size: 4rem;
-  font-weight: bold;
-}
-
-.point-buttons {
-  display: flex;
-  justify-content: center;
 }
 
 .last-score {
