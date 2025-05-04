@@ -74,33 +74,14 @@ const pointOptions = [
 
     <!-- Player 1 Section (Top, Rotated) -->
     <div class="row flex-grow-1">
-      <div class="col-12 player-section player1-section">
-        <div class="score-container">
-          <div class="rotated-content">
-            <h3 class="player-name mb-3">{{ player1Name }}</h3>
-            <div class="score-display mb-3">{{ player1Score }}</div>
-
-            <!-- Player 1 Point Buttons -->
-            <div class="point-buttons">
-              <button
-                v-for="option in pointOptions"
-                :key="`p1-${option.points}`"
-                class="btn btn-success mx-1"
-                :disabled="checkWinner() !== ''"
-                @click="
-                  earnPoints({
-                    Player: player1Index,
-                    Points: option.points,
-                    Reason: `${player1Name} scored ${option.points}`,
-                  })
-                "
-              >
-                {{ option.label }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MobilePlayer
+        :player-name="player1Name"
+        :player-index="player1Index"
+        :player-score="player1Score"
+        :is-disabled="checkWinner() !== ''"
+        :win-function="earnPoints"
+        :rotated="true"
+      />
     </div>
 
     <!-- Middle Section with Undo Button and Last Score -->
@@ -133,31 +114,14 @@ const pointOptions = [
 
     <!-- Player 2 Section (Bottom) -->
     <div class="row flex-grow-1">
-      <div class="col-12 player-section player2-section">
-        <div class="score-container">
-          <h3 class="player-name mb-3">{{ player2Name }}</h3>
-          <div class="score-display mb-3">{{ player2Score }}</div>
-
-          <!-- Player 2 Point Buttons -->
-          <div class="point-buttons">
-            <button
-              v-for="option in pointOptions"
-              :key="`p2-${option.points}`"
-              class="btn btn-primary mx-1"
-              :disabled="checkWinner() !== ''"
-              @click="
-                earnPoints({
-                  Player: player2Index,
-                  Points: option.points,
-                  Reason: `${player2Name} scored ${option.points}`,
-                })
-              "
-            >
-              {{ option.label }}
-            </button>
-          </div>
-        </div>
-      </div>
+      <MobilePlayer
+        :player-name="player2Name"
+        :player-index="player2Index"
+        :player-score="player2Score"
+        :is-disabled="checkWinner() !== ''"
+        :win-function="earnPoints"
+        :rotated="false"
+      />
     </div>
 
     <!-- Bottom Controls -->

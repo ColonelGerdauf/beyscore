@@ -21,7 +21,7 @@ export default function (args: UseEarnPointsArgs) {
     reason: args.CurrentReason.value,
   });
 
-  if (args.Player === 1) {
+  if (args.Player === 0) {
     args.Player1Score.value += args.Points;
   } else {
     args.Player2Score.value += args.Points;
