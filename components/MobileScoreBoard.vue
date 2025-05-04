@@ -77,7 +77,7 @@ function startCountdown() {
       />
     </div>
 
-    <!-- Middle Section with Undo Button and Last Score -->
+    <!-- Middle Section with Countdown, Undo Button and Last Score -->
     <div class="row my-2">
       <div class="col-12 text-center">
         <div class="mb-2">
@@ -141,14 +141,6 @@ function startCountdown() {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-}
-
-.player1-section {
-  border-bottom: 1px solid #dee2e6;
-}
-
-.player2-section {
-  border-top: 1px solid #dee2e6;
 }
 
 .last-score {
