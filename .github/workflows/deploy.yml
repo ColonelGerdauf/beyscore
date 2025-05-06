@@ -10,19 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # - run: corepack enable
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - run: corepack enable
+      - uses: actions/setup-node@v4
         with:
-          run_install: false
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
+          node-version: "22"
       # Pick your own package manager and build script
-      - run: pnpm install
-      - run: NUXT_APP_BASE_URL=/beyscore/ pnpm dlx nuxt build --preset github_pages
+      - run: npm install
+      - run: npx nuxt build --preset github_pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -12,12 +12,12 @@ BeyScore is a Beyblade score keeping application built using [Vue.js](https://vu
 
 ## Setup
 
-Install [NodeJS](https://nodejs.org/en), [pnpm](https://pnpm.io), and [Git-LFS](https://git-lfs.com/)
+Install [Volta](https://docs.volta.sh/guide/getting-started), and [Git-LFS](https://git-lfs.com/)
 
 Make sure to install dependencies:
 
 ```bash
-pnpm install
+npm install
 ```
 
 VS Code user? Open `beyscore.code-workspace` and install the recommended extensions
@@ -27,7 +27,7 @@ VS Code user? Open `beyscore.code-workspace` and install the recommended extensi
 Start the development server on `http://localhost:3000`:
 
 ```bash
-pnpm dev
+npm dev
 ```
 
 ## Production
@@ -35,11 +35,11 @@ pnpm dev
 Build the application for production:
 
 ```bash
-pnpm generate
+npm generate
 ```
 
 Locally preview production build:
 
 ```bash
-pnpm preview
+npm preview
 ```
