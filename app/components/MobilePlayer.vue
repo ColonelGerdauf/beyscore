@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { EarnPointArgs } from "./WinButton.vue";
+import type { EarnPointArgs } from "../types/earnPointArgs";
 
 defineProps<{
   playerName: string;
@@ -22,52 +22,57 @@ defineProps<{
       <WinButton
         win-name="Spin"
         :is-disabled="isDisabled"
-        :click-func="winFunction"
-        :args="{
-          Points: 1,
-          Player: playerIndex,
-          Reason: `${playerName} Spin Finish`,
-        }"
+        @clicked="
+          winFunction({
+            Points: 1,
+            Player: playerIndex,
+            Reason: `${playerName} Spin Finish`,
+          })
+        "
       />
       <WinButton
         win-name="Over"
         :is-disabled="isDisabled"
-        :click-func="winFunction"
-        :args="{
-          Points: 2,
-          Player: playerIndex,
-          Reason: `${playerName} Over Finish`,
-        }"
+        @clicked="
+          winFunction({
+            Points: 2,
+            Player: playerIndex,
+            Reason: `${playerName} Over Finish`,
+          })
+        "
       />
       <WinButton
         win-name="Burst"
         :is-disabled="isDisabled"
-        :click-func="winFunction"
-        :args="{
-          Points: 2,
-          Player: playerIndex,
-          Reason: `${playerName} Burst Finish`,
-        }"
+        @clicked="
+          winFunction({
+            Points: 2,
+            Player: playerIndex,
+            Reason: `${playerName} Burst Finish`,
+          })
+        "
       />
       <WinButton
         win-name="Xtreme"
         :is-disabled="isDisabled"
-        :click-func="winFunction"
-        :args="{
-          Points: 3,
-          Player: playerIndex,
-          Reason: `${playerName} Xtreme Finish`,
-        }"
+        @clicked="
+          winFunction({
+            Points: 3,
+            Player: playerIndex,
+            Reason: `${playerName} Xtreme Finish`,
+          })
+        "
       />
       <WinButton
         win-name="Launch Error"
         :is-disabled="isDisabled"
-        :click-func="winFunction"
-        :args="{
-          Points: 1,
-          Player: playerIndex,
-          Reason: `${playerName} Opponent Launch Error`,
-        }"
+        @clicked="
+          winFunction({
+            Points: 1,
+            Player: playerIndex,
+            Reason: `${playerName} Opponent Launch Error`,
+          })
+        "
       />
     </div>
   </div>

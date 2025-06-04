@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@vueuse/sound/nuxt",
     "@nuxtjs/color-mode",
+    "@pinia/nuxt",
   ],
   css: ["bootstrap/dist/css/bootstrap.min.css", "assets/scss/main.scss"],
   sound: {

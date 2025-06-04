@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { EarnPointArgs } from "./WinButton.vue";
-import { useSound } from "@vueuse/sound";
-
 const props = defineProps<{
   pointsToWin: number;
   player1Name: string;
@@ -14,36 +10,12 @@ defineEmits(["reset"]);
 const player1Index = 0;
 const player2Index = 1;
 
-const player1Score = ref(0);
-const player2Score = ref(0);
-const scoreReason = ref("");
-const history = ref<ScoreHistory[]>([]);
-
-function earnPoints(args: EarnPointArgs) {
-  useEarnPoints({
-    Player: args.Player,
-    Points: args.Points,
-    Reason: args.Reason,
-    CurrentReason: scoreReason,
-    Player1Score: player1Score,
-    Player2Score: player2Score,
-    History: history,
-  });
-}
-
-function undoLastAction() {
-  useUndoAction({
-    Player1Score: player1Score,
-    Player2Score: player2Score,
-    ScoreReason: scoreReason,
-    History: history,
-  });
-}
+const store = useScoreboardStore();
 
 function checkWinner() {
-  if (player1Score.value >= props.pointsToWin) {
+  if (store.player1Score >= props.pointsToWin) {
     return `${props.player1Name} Wins!`;
-  } else if (player2Score.value >= props.pointsToWin) {
+  } else if (store.player2Score >= props.pointsToWin) {
     return `${props.player2Name} Wins!`;
   }
   return "";
@@ -70,9 +42,9 @@ function startCountdown() {
       <MobilePlayer
         :player-name="player1Name"
         :player-index="player1Index"
-        :player-score="player1Score"
+        :player-score="store.player1Score"
         :is-disabled="checkWinner() !== ''"
-        :win-function="earnPoints"
+        :win-function="store.earnPoints"
         :rotated="true"
       />
     </div>
@@ -86,8 +58,8 @@ function startCountdown() {
           </button>
           <button
             class="btn btn-warning btn-lg"
-            :disabled="history.length === 0"
-            @click="undoLastAction"
+            :disabled="store.history.length === 0"
+            @click="store.undoLastAction"
           >
             Undo
           </button>
@@ -95,7 +67,7 @@ function startCountdown() {
 
         <div class="last-score mt-2">
           <small>Last Score:</small>
-          <div>{{ scoreReason || "No scores yet" }}</div>
+          <div>{{ store.scoreReason || "No scores yet" }}</div>
         </div>
 
         <!-- Winner Display -->
@@ -113,9 +85,9 @@ function startCountdown() {
       <MobilePlayer
         :player-name="player2Name"
         :player-index="player2Index"
-        :player-score="player2Score"
+        :player-score="store.player2Score"
         :is-disabled="checkWinner() !== ''"
-        :win-function="earnPoints"
+        :win-function="store.earnPoints"
         :rotated="false"
       />
     </div>

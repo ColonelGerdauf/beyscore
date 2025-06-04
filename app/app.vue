@@ -15,7 +15,10 @@ const player1Name = ref("");
 const player2Name = ref("");
 const judgeMode = ref(true);
 
+const store = useScoreboardStore();
+
 function newMatch(matchScore: number) {
+  store.reset();
   scoreToWin.value = matchScore;
   if (player1Name.value === "") {
     player1Name.value = "Player 1";
