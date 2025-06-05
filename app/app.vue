@@ -95,6 +95,10 @@ function reset() {
           7 Points
         </button>
       </div>
+
+      <PwaPrompt />
+      <PwaInstallPrompt />
+      <PwaBadge />
     </div>
 
     <ScoreBoard
