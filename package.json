@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "generate-pwa-icons": "tsx scripts/generatePwaIcons.ts"
   },
   "dependencies": {
     "@nuxtjs/color-mode": "3.5.2",
@@ -25,6 +26,9 @@
     "eslint": "^9.24.0",
     "prettier": "3.4.2",
     "sass-embedded": "^1.86.3",
+    "sharp": "^0.34.2",
+    "sharp-ico": "^0.1.5",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "volta": {

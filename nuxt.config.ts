@@ -20,29 +20,37 @@ export default defineNuxtConfig({
   },
   pwa: {
     registerType: "autoUpdate",
+    devOptions: {
+      enabled: true,
+    },
     workbox: {
       globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
     },
-    // includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+    includeAssets: ["favicon.ico", "apple-touch-icon.png", "maskable-icon.png"],
     manifest: {
       name: "WBO BeySore",
       short_name: "BeyScore",
       description:
         "The official score keeping app of the World Beyblade Organization",
       theme_color: "#ffffff",
-      scope: "/beyscore/",
-      start_url: "/beyscore/",
+      scope: "/",
+      start_url: "/",
       icons: [
-        // {
-        //   src: "pwa-192x192.png",
-        //   sizes: "192x192",
-        //   type: "image/png",
-        // },
-        // {
-        //   src: "pwa-512x512.png",
-        //   sizes: "512x512",
-        //   type: "image/png",
-        // },
+        {
+          src: "pwa-64x64.png",
+          sizes: "64x64",
+          type: "image/png",
+        },
+        {
+          src: "pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
       ],
     },
   },
@@ -50,3 +58,4 @@ export default defineNuxtConfig({
     dataValue: "bs-theme",
   },
 });
+
