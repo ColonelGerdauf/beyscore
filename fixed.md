@@ -1,0 +1,1 @@
+- When you refresh the page, it forgets your settings

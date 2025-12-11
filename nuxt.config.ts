@@ -5,14 +5,17 @@ export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
+  experimental: {
+    typescriptPlugin: true,
+  },
   modules: [
     "@nuxt/eslint",
     "@vite-pwa/nuxt",
     "@vueuse/sound/nuxt",
     "@nuxtjs/color-mode",
     "@pinia/nuxt",
-    "shadcn-nuxt",
     "@nuxt/icon",
+    "@nuxt/fonts",
   ],
   css: ["@/assets/css/tailwind.css"],
   sound: {
@@ -62,15 +65,10 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: "",
   },
-  shadcn: {
-    /**
-     * Prefix for all the imported component
-     */
-    prefix: "",
-    /**
-     * Directory that the component lives in.
-     * @default "./components/ui"
-     */
-    componentDir: "./app/components/ui",
+  fonts: {
+    defaults: {
+      weights: [400, 500, 600, 700],
+      styles: ["normal", "italic"],
+    },
   },
 });
