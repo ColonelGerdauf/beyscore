@@ -1,8 +1,16 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 
+import { DEFAULT_CUSTOM_POINTS } from "~/lib/gameUtils";
+
 export type GenerationOption = "x" | "burst" | "mfb-zero-g" | "plastics-hms";
-export type MatchTypeOption = "3pts" | "4pts" | "5pts" | "7pts" | "nolimit";
+export type MatchTypeOption =
+  | "3pts"
+  | "4pts"
+  | "5pts"
+  | "7pts"
+  | "nolimit"
+  | "custom";
 export type BestOfOption = 3 | 5 | undefined;
 
 type MatchHistoryEntry = Record<string, unknown>;
@@ -21,6 +29,7 @@ interface HistorySnapshot {
 interface GameConfig {
   generation: GenerationOption;
   matchType: MatchTypeOption;
+  customPoints: number;
   bestOf: BestOfOption;
   ownFinishEnabled: boolean;
 }
@@ -121,6 +130,11 @@ export const useScoreboardStore = defineStore("scoreboard", () => {
     persistedState.matchType || DEFAULT_MATCH_TYPE,
   );
   const bestOf = ref<BestOfOption>(persistedState.bestOf || DEFAULT_BEST_OF);
+  const customPoints = ref<number>(
+    persistedState.customPoints !== undefined
+      ? persistedState.customPoints
+      : DEFAULT_CUSTOM_POINTS,
+  );
   const ownFinishEnabled = ref<boolean>(
     persistedState.ownFinishEnabled !== undefined
       ? persistedState.ownFinishEnabled
@@ -140,6 +154,10 @@ export const useScoreboardStore = defineStore("scoreboard", () => {
     if (value === "nolimit") {
       bestOf.value = undefined;
     }
+  };
+
+  const setCustomPoints = (value: number) => {
+    customPoints.value = Math.max(1, Math.floor(value));
   };
 
   const setBestOf = (value: BestOfOption) => {
@@ -218,6 +236,7 @@ export const useScoreboardStore = defineStore("scoreboard", () => {
         player2Error: player2Error.value,
         generation: generation.value,
         matchType: matchType.value,
+        customPoints: customPoints.value,
         bestOf: bestOf.value,
         ownFinishEnabled: ownFinishEnabled.value,
       };
@@ -251,6 +270,7 @@ export const useScoreboardStore = defineStore("scoreboard", () => {
     player2Error,
     generation,
     matchType,
+    customPoints,
     bestOf,
     ownFinishEnabled,
   ];
@@ -286,10 +306,12 @@ export const useScoreboardStore = defineStore("scoreboard", () => {
     player2Error,
     generation,
     matchType,
+    customPoints,
     bestOf,
     ownFinishEnabled,
     setGeneration,
     setMatchType,
+    setCustomPoints,
     setBestOf,
     setOwnFinishEnabled,
     resetConfigToDefaults,

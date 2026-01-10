@@ -16,10 +16,12 @@ import type {
 export function useMatchSettings(
   generation: Ref<GenerationOption>,
   matchType: Ref<MatchTypeOption>,
+  customPoints: Ref<number>,
   bestOf: Ref<BestOfOption>,
   isOwnFinishEnabled: Ref<boolean>,
   setGeneration: (value: GenerationOption) => void,
   setMatchType: (value: MatchTypeOption) => void,
+  setCustomPoints: (value: number) => void,
   setBestOf: (value: BestOfOption) => void,
   setOwnFinishEnabled: (value: boolean) => void,
 ) {
@@ -30,7 +32,9 @@ export function useMatchSettings(
   const beybladeGenerationLabel = computed(() =>
     getGenerationLabel(generation.value),
   );
-  const pointsToWinLabel = computed(() => getPointsToWinLabel(matchType.value));
+  const pointsToWinLabel = computed(() =>
+    getPointsToWinLabel(matchType.value, customPoints.value),
+  );
   const setsLabel = computed(() => getSetsLabel(bestOf.value));
   const ownFinishOptionLabel = computed(() =>
     isOwnFinishEnabled.value ? "On" : "Off",
@@ -87,6 +91,10 @@ export function useMatchSettings(
     setOwnFinishEnabled(state);
   }
 
+  function handleCustomPointsChange(value: number) {
+    setCustomPoints(value);
+  }
+
   function closeDropdowns() {
     openDropdown.value = null;
   }
@@ -112,6 +120,7 @@ export function useMatchSettings(
     handlePointsToWinSelect,
     handleSetsSelect,
     handleOwnFinishToggle,
+    handleCustomPointsChange,
     closeDropdowns,
 
     // Constants

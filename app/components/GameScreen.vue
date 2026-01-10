@@ -29,6 +29,7 @@ const scoreboardStore = useScoreboardStore();
 const {
   generation,
   matchType,
+  customPoints,
   bestOf,
   ownFinishEnabled,
   player1Score,
@@ -74,6 +75,7 @@ const {
 } = useGameState({
   generation,
   matchType,
+  customPoints,
   bestOf,
   player1Score,
   player2Score,
@@ -101,16 +103,19 @@ const {
   handlePointsToWinSelect,
   handleSetsSelect,
   handleOwnFinishToggle,
+  handleCustomPointsChange,
   closeDropdowns,
   GENERATION_ITEMS: generationItems,
   SETS_ITEMS: setsItems,
 } = useMatchSettings(
   generation,
   matchType,
+  customPoints,
   bestOf,
   isOwnFinishEnabled,
   scoreboardStore.setGeneration,
   scoreboardStore.setMatchType,
+  scoreboardStore.setCustomPoints,
   scoreboardStore.setBestOf,
   scoreboardStore.setOwnFinishEnabled,
 );
@@ -135,11 +140,13 @@ const {
   player2NameSetting,
   generation,
   matchType,
+  customPoints,
   bestOf,
   isOwnFinishEnabled,
   {
     setGeneration: scoreboardStore.setGeneration,
     setMatchType: scoreboardStore.setMatchType,
+    setCustomPoints: scoreboardStore.setCustomPoints,
     setBestOf: scoreboardStore.setBestOf,
     setOwnFinishEnabled: scoreboardStore.setOwnFinishEnabled,
     reset: scoreboardStore.reset,
@@ -651,6 +658,30 @@ watch(gameEnded, async (ended) => {
                     :items="pointsToWinItems"
                     :selected-value="matchTypeParam"
                     @select="handlePointsToWinSelect"
+                  />
+                </div>
+              </div>
+            </div>
+            <div v-if="matchTypeParam === 'custom'" class="settings-field">
+              <div class="custom-points-field">
+                <label for="custom-points-input" class="custom-points-title">Custom Points</label>
+                <div class="custom-points-input-container">
+                  <input
+                    id="custom-points-input"
+                    type="number"
+                    min="1"
+                    :value="customPoints"
+                    class="custom-points-input"
+                    @input="
+                      (e) => {
+                        const val = parseInt(
+                          (e.target as HTMLInputElement).value,
+                          10,
+                        );
+                        if (!isNaN(val) && val >= 1)
+                          handleCustomPointsChange(val);
+                      }
+                    "
                   />
                 </div>
               </div>
@@ -1167,6 +1198,52 @@ watch(gameEnded, async (ended) => {
   margin-top: 8px;
   display: flex;
   align-items: center;
+}
+
+.custom-points-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.custom-points-title {
+  font-family: "Titillium Web", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.custom-points-input-container {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background-color: white;
+  padding: 8px 12px;
+  box-shadow: 0 0 4px rgba(15, 23, 42, 0.05);
+}
+
+.custom-points-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: "Titillium Web", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #475569;
+  outline: none;
+}
+
+.custom-points-input::-webkit-outer-spin-button,
+.custom-points-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-points-input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 .settings-buttons {

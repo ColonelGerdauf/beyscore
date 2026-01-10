@@ -1,35 +1,43 @@
-<script setup>
+<script setup lang="ts">
 import { ref, nextTick, watch } from "vue";
 import { storeToRefs } from "pinia";
 import ToggleButton from "../components/ToggleButton.vue";
 import Button from "../components/Button.vue";
 import { useScoreboardStore } from "~/stores/scoreboardStore";
+import type {
+  GenerationOption,
+  MatchTypeOption,
+} from "~/stores/scoreboardStore";
 
 const scoreboardStore = useScoreboardStore();
-const { generation, matchType, bestOf, ownFinishEnabled } =
+const { generation, matchType, customPoints, bestOf, ownFinishEnabled } =
   storeToRefs(scoreboardStore);
 
-const selectedGeneration = ref(generation.value);
-watch(generation, (value) => {
+const customPointsInputRef = ref<HTMLInputElement | null>(null);
+
+const selectedGeneration = ref<GenerationOption | null>(generation.value);
+watch(generation, (value: GenerationOption) => {
   selectedGeneration.value = value;
 });
 
-const selectedMatchType = ref(matchType.value);
-watch(matchType, (value) => {
+const selectedMatchType = ref<MatchTypeOption | null>(matchType.value);
+watch(matchType, (value: MatchTypeOption) => {
   selectedMatchType.value = value;
 });
 
-const selectedBestOf = ref(bestOf.value ? bestOf.value.toString() : undefined);
-watch(bestOf, (value) => {
+const selectedBestOf = ref<string | undefined>(
+  bestOf.value ? bestOf.value.toString() : undefined,
+);
+watch(bestOf, (value: number | undefined) => {
   selectedBestOf.value = value ? value.toString() : undefined;
 });
 
 const localOwnFinishEnabled = ref(ownFinishEnabled.value);
-watch(ownFinishEnabled, (value) => {
+watch(ownFinishEnabled, (value: boolean) => {
   localOwnFinishEnabled.value = value;
 });
 
-const handleGenerationToggle = (value, state) => {
+const handleGenerationToggle = (value: GenerationOption, state: boolean) => {
   if (state) {
     scoreboardStore.setGeneration(value);
   } else if (selectedGeneration.value === value) {
@@ -40,9 +48,15 @@ const handleGenerationToggle = (value, state) => {
   }
 };
 
-const handleMatchTypeToggle = (value, state) => {
+const handleMatchTypeToggle = (value: MatchTypeOption, state: boolean) => {
   if (state) {
     scoreboardStore.setMatchType(value);
+    if (value === "custom") {
+      nextTick(() => {
+        customPointsInputRef.value?.focus();
+        customPointsInputRef.value?.select();
+      });
+    }
   } else if (selectedMatchType.value === value) {
     selectedMatchType.value = null;
     nextTick(() => {
@@ -51,15 +65,32 @@ const handleMatchTypeToggle = (value, state) => {
   }
 };
 
-const handleBestOfToggle = (value, state) => {
-  if (state) {
-    scoreboardStore.setBestOf(value ? parseInt(value, 10) : null);
-  } else if (selectedBestOf.value === value) {
-    scoreboardStore.setBestOf(null);
+const handleCustomPointsInput = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const value = parseInt(target.value, 10);
+  if (!isNaN(value) && value >= 1) {
+    scoreboardStore.setCustomPoints(value);
   }
 };
 
-const handleOwnFinishToggle = (state) => {
+const handleCustomPointsBlur = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const value = parseInt(target.value, 10);
+  if (isNaN(value) || value < 1) {
+    // Preserve the current store value instead of hardcoding 10
+    target.value = String(customPoints.value);
+  }
+};
+
+const handleBestOfToggle = (value: string, state: boolean) => {
+  if (state) {
+    scoreboardStore.setBestOf(value ? parseInt(value, 10) : undefined);
+  } else if (selectedBestOf.value === value) {
+    scoreboardStore.setBestOf(undefined);
+  }
+};
+
+const handleOwnFinishToggle = (state: boolean) => {
   scoreboardStore.setOwnFinishEnabled(state);
 };
 
@@ -122,7 +153,7 @@ const handleStartGame = async () => {
 
         <!-- Match Type toggle buttons -->
         <div class="match-type-buttons-container">
-          <!-- For X format: 4, 5, 7, No Limit -->
+          <!-- For X format: 4, 5, 7, No Limit, Custom -->
           <template v-if="selectedGeneration === 'x'">
             <ToggleButton
               :key="`4pts-${selectedMatchType}`"
@@ -152,9 +183,16 @@ const handleStartGame = async () => {
             >
               No Limit
             </ToggleButton>
+            <ToggleButton
+              :key="`custom-${selectedMatchType}`"
+              :initial-state="selectedMatchType === 'custom'"
+              @toggle="(state) => handleMatchTypeToggle('custom', state)"
+            >
+              Custom
+            </ToggleButton>
           </template>
 
-          <!-- For Burst, Metal Fight/Zero-G, Plastic & HMS: 3, 4, 5, No Limit -->
+          <!-- For Burst, Metal Fight/Zero-G, Plastic & HMS: 3, 4, 5, No Limit, Custom -->
           <template v-else>
             <ToggleButton
               :key="`3pts-${selectedMatchType}`"
@@ -184,7 +222,36 @@ const handleStartGame = async () => {
             >
               No Limit
             </ToggleButton>
+            <ToggleButton
+              :key="`custom-${selectedMatchType}`"
+              :initial-state="selectedMatchType === 'custom'"
+              @toggle="(state) => handleMatchTypeToggle('custom', state)"
+            >
+              Custom
+            </ToggleButton>
           </template>
+        </div>
+
+        <!-- Custom Points Input (shown when Custom is selected) -->
+        <div
+          v-if="selectedMatchType === 'custom'"
+          class="custom-points-container"
+        >
+          <label for="custom-points-input" class="custom-points-label"
+            >Points to Win:</label
+          >
+          <div class="custom-points-input-wrapper">
+            <input
+              id="custom-points-input"
+              ref="customPointsInputRef"
+              type="number"
+              min="1"
+              :value="customPoints"
+              class="custom-points-input"
+              @input="handleCustomPointsInput"
+              @blur="handleCustomPointsBlur"
+            />
+          </div>
         </div>
 
         <!-- Best-of Sets toggle buttons (hidden when No Limit is selected) -->
@@ -347,6 +414,59 @@ const handleStartGame = async () => {
 .best-of-buttons-container :deep(button) {
   width: auto;
   flex-shrink: 0;
+}
+
+.custom-points-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.custom-points-label {
+  font-family: "Titillium Web", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.custom-points-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  min-width: 70px;
+  padding: 8px 12px;
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  border-bottom: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 0 0 #cbd5e1;
+}
+
+.custom-points-input {
+  width: 50px;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: "Titillium Web", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-align: center;
+  outline: none;
+}
+
+.custom-points-input::-webkit-outer-spin-button,
+.custom-points-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-points-input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 .own-finish-heading {
